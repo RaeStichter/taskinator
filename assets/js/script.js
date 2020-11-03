@@ -1,7 +1,11 @@
-var buttonEl = document.querySelector("#save-task");
+var formEl = document.querySelector("#task-form");
 var tasksToDoE1 = document.querySelector("#tasks-to-do");
 
-var createTaskHandler = function() {
+var createTaskHandler = function(event) {
+
+    // Overrides the browser actions to allow us to control actions with just js
+    event.preventDefault();
+
     // Create new task item
     var listItemE1 = document.createElement("li");
     // Style new task item
@@ -13,7 +17,7 @@ var createTaskHandler = function() {
 }
 
 // On a button click, create a task.
-buttonEl.addEventListener("click", createTaskHandler);
+formEl.addEventListener("submit", createTaskHandler);
 
 
 //console.log(buttonEl);
