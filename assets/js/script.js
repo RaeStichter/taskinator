@@ -1,12 +1,18 @@
+// GLOBAL Variables
 var taskIdCounter = 0; // variable to track each time the submit button is selected for tracking purposes
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
 var pageContentEl = document.querySelector("#page-content");
+var tasksInProgressEl = document.querySelector("#tasks-in-progress");
+var tasksCompletedEl = document.querySelector("#tasks-completed");
 
 var taskFormHandler = function(event) {
 
     // Overrides the browser actions to allow us to control actions with just js
     event.preventDefault();
+
+    // keep track of the data task id
+    var isEdit = formEl.hasAttribute("data-task-id");
 
     var taskNameInput = document.querySelector("input[name='task-name']").value;
     var taskTypeInput = document.querySelector("select[name='task-type']").value;
@@ -21,15 +27,39 @@ var taskFormHandler = function(event) {
     // reset the form each time the button it hit so that it is empty for the next task.
     formEl.reset();
 
+    // has data attribute, so get task id and call function to complete edit process
+    if (isEdit) {
+        var taskId = formEl.getAttribute("data-task-id");
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
+    }
+    // no data attribute, so create object as normal and pass to createTaskEl function
+    else {
     // package up data as an object
-    var taskDataObj = {
-        name: taskNameInput,
-        type: taskTypeInput
-    };
-
-    // send it as an argument to createTaskEl
-    createTaskEl(taskDataObj);
+        var taskDataObj = {
+            name: taskNameInput,
+            type: taskTypeInput
+        };
+        // send it as an argument to createTaskEl (only if isEdit is faslse)
+        // this will make sure that we edit the task and not jsut create a new one
+        createTaskEl(taskDataObj);
+    }
 }
+
+// this function runs if the isEdit is true.  Takes the taskName, taskType, taskId as inputs
+var completeEditTask = function(taskName, taskType, taskId) {
+    // find the matching task list item
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    //set new values
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    alert("Task Updated!");
+
+    // reset the form by removing the task id and changing the button text back to normal
+    formEl.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task";
+};
 
 // This hold code that creates a new task HTML element.
 var createTaskEl = function(taskDataObj) {
@@ -89,7 +119,7 @@ var createTaskActions = function(taskId) {
 
     actionContainerEl.appendChild(statusSelectEl);
 
-    var statusChoices = ["To Do", "In Progress", "Compelted"];
+    var statusChoices = ["To Do", "In Progress", "Completed"];
 
     for (var i = 0; i < statusChoices.length; i++) {
         // create option element
@@ -149,4 +179,27 @@ var editTask = function(taskId) {
     formEl.setAttribute("data-task-id", taskId);
 }
 
+var taskStatusChangeHandler = function(event) {
+    // get the task item's id
+    var taskId = event.target.getAttribute("data-task-id")
+
+    // get the currently selected option's value and onvert to lowercase
+    var statusValue = event.target.value.toLowerCase();
+
+    // find the parent task item element based on the id
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    if (statusValue === "to do") {
+        tasksToDoEl.appendChild(taskSelected);
+      } 
+      else if (statusValue === "in progress") {
+        tasksInProgressEl.appendChild(taskSelected);
+      } 
+      else if (statusValue === "completed") {
+        tasksCompletedEl.appendChild(taskSelected);
+      }
+};
+
 pageContentEl.addEventListener("click", taskButtonHandler);
+
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
