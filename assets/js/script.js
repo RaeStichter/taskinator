@@ -332,105 +332,19 @@ var saveTasks = function() {
 // this first line should reassign the tasks variable to whatever localstorage returns
 
 var loadTasks = function() {
-    tasks = localStorage.getItem("tasks");
-    console.log(tasks);
+    var savedTasks = localStorage.getItem("tasks");
 
     //check to see if tasks is equal to null, if so make empty array
-    if (tasks === null) {
-        tasks = [];
+    if (!saveTasks) {
         return false;
     }
-
     // take the info from local storage and turn it back into an array of objects
-    tasks = JSON.parse(tasks);
-    console.log(tasks);
+    savedTasks = JSON.parse(savedTasks);
 
-    for (var i = 0; i < tasks.length; i++) {
-        // assign id property to taskIdCounter
-        taskIdCounter = tasks[i].id;
-        
-        // Create new task item
-        var listItemEl = document.createElement("li");
-        listItemEl.className = "task-item";
-
-        // add task id as a custom attribute
-        listItemEl.setAttribute("data-task-id", taskIdCounter);
-        // make draggable
-        listItemEl.setAttribute("draggable", "true");
-        
-        //console.log(tasks[i]);
-        
-
-        // Create div to hold task info and add to list item
-        var taskInfoEl = document.createElement("div");
-        // Give it a class name
-        taskInfoEl.className = "task-info";
-        // Add HTML content to div
-        taskInfoEl.innerHTML = "<h3 class='task-name'>" + tasks[i].name + "</h3><span class='task-type'>" + tasks[i].type + "</span>";
-
-        listItemEl.appendChild(taskInfoEl);
-        
-        // Call the create task actions function.  This is where the drop down info is
-        var taskActionsEl = createTaskActions(taskIdCounter);
-        listItemEl.appendChild(taskActionsEl);
-             
-        console.log(listItemEl);
-
-        if (tasks[i].status === "to-do") {
-            listItemEl.querySelector("select[name='status-change']").selectedIndex = 0;
-            tasksToDoEl.appendChild(listItemEl);
-            //statusSelectEl.selectedIndex = 0;
-        }
-        else if (tasks[i].status === "in-progress") {
-            listItemEl.querySelector("select[name='status-change']").selectedIndex = 1;
-            tasksInProgressEl.appendChild(listItemEl);
-            //statusSelectEl.selectedIndex = 1;
-        }
-        else if (tasks[i].status === "complete") {
-            listItemEl.querySelector("select[name='status-change']").selectedIndex = 2;
-            tasksCompletedEl.appendChild(listItemEl);
-            //statusSelectEl.selectedIndex = 2;
-        }
-
-        taskIdCounter++;
-        console.log(listItemEl);
-
-
-
-
-
-
-
-
-    //      // Create div to hold task info and add to list item
-    // var taskInfoEl = document.createElement("div");
-    // // Give it a class name
-    // taskInfoEl.className = "task-info";
-    // // Add HTML content to div
-    // taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
-
-    // listItemEl.appendChild(taskInfoEl);
-
-    // // Call the create task actions function.  This is where the drop down info is
-    // var taskActionsEl = createTaskActions(taskIdCounter);
-    // listItemEl.appendChild(taskActionsEl);
-    
-    // // include the task id in the task data object
-    // // push the whole object into the task array
-    // taskDataObj.id = taskIdCounter;
-    // tasks.push(taskDataObj);
-
-    // // Add entire list item to list
-    // tasksToDoEl.appendChild(listItemEl);
-
-    // // increase task counter for next unique id
-    // taskIdCounter++;
-
-    // console.log(taskDataObj);
-    // console.log(taskDataObj.status);
-
-    // // save tasks
-    // saveTasks();
+    // loop through savedTasks array
+    for (var i = 0; i < savedTasks.length; i++) {
+        // pass each task object into the createTaskE1()` function
+        createTaskEl(savedTasks[i]);
     }
 }
 
