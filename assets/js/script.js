@@ -72,6 +72,9 @@ var completeEditTask = function(taskName, taskType, taskId) {
     // reset the form by removing the task id and changing the button text back to normal
     formEl.removeAttribute("data-task-id");
     document.querySelector("#save-task").textContent = "Add Task";
+
+    // save tasks
+    saveTasks();
 };
 
 // This hold code that creates a new task HTML element.
@@ -111,6 +114,9 @@ var createTaskEl = function(taskDataObj) {
 
     console.log(taskDataObj);
     console.log(taskDataObj.status);
+
+    // save tasks
+    saveTasks();
 }
 
 // create dynamically responsive buttons
@@ -195,6 +201,9 @@ var deleteTask = function(taskId) {
 
     // reassign tasks array to be the same as updatedTaskArr
     tasks = updatedTaskArr;
+
+    // save tasks
+    saveTasks();
 };
 
 var editTask = function(taskId) {
@@ -244,6 +253,9 @@ var taskStatusChangeHandler = function(event) {
         }
     }
     console.log(tasks);
+
+    // save tasks
+    saveTasks();
 };
 
 // -------------------------DRAG AND DROP FUNCTIONS-----------------------------
@@ -297,6 +309,9 @@ var dropTaskHandler = function(event) {
             tasks[i].status = statusSelectEl.value.toLowerCase();
         }
     }
+    // save tasks
+    saveTasks();
+
     console.log(tasks);
 };
 
@@ -306,6 +321,12 @@ var dragLeaveHandler = function(event) {
         taskListEl.removeAttribute("style");
     }
 }
+
+// -------------------------SAVING TASKS------------------------------------
+var saveTasks = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
 
 // -------------------------EVENT LISTENERS-----------------------------
 
